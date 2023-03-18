@@ -1,12 +1,7 @@
 import Head from "next/head";
-import { Box, Container, Unstable_Grid2 as Grid } from "@mui/material";
+import { Box, Container, TextField, Typography, Unstable_Grid2 as Grid } from "@mui/material";
 import { Layout as DashboardLayout } from "src/layouts/dashboard/layout";
-import { OverviewBudget } from "src/sections/overview/overview-budget";
-import { OverviewTasksProgress } from "src/sections/overview/overview-tasks-progress";
-import { OverviewTotalCustomers } from "src/sections/overview/overview-total-customers";
-import { OverviewTotalProfit } from "src/sections/overview/overview-total-profit";
-
-const now = new Date();
+import ChatInput from "src/components/chat-input";
 
 const Page = () => (
   <>
@@ -20,27 +15,38 @@ const Page = () => (
         py: 8,
       }}
     >
-      <Container maxWidth="xl">
-        <Grid container spacing={3}>
-          <Grid xs={12} sm={6} lg={3}>
-            <OverviewBudget difference={12} positive sx={{ height: "100%" }} value="$24k" />
-          </Grid>
-          <Grid xs={12} sm={6} lg={3}>
-            <OverviewTotalCustomers
-              difference={16}
-              positive={false}
-              sx={{ height: "100%" }}
-              value="1.6k"
-            />
-          </Grid>
-          <Grid xs={12} sm={6} lg={3}>
-            <OverviewTasksProgress sx={{ height: "100%" }} value={75.5} />
-          </Grid>
-          <Grid xs={12} sm={6} lg={3}>
-            <OverviewTotalProfit sx={{ height: "100%" }} value="$15k" />
-          </Grid>
-        </Grid>
-      </Container>
+      <Box
+        sx={{ mb: 5 }}
+        m="auto"
+        justifyContent="center"
+        alignItems="center"
+        alignContent="center"
+        display="flex"
+      >
+        <Typography variant="h3">ChatGPT-4</Typography>
+      </Box>
+      <Box
+        sx={{ maxWidth: "50%" }}
+        m="auto"
+        justifyContent="center"
+        alignItems="center"
+        alignContent="center"
+        display="flex"
+      >
+        <Typography
+          variant="p"
+          sx={{
+            textAlign: "center",
+          }}
+        >
+          Welcome to the future of AI chatbots. ChatGPT-4 is a chatbot that uses the latest in AI
+          technology to create a conversation with you. It is powered by OpenAI&apos;s GPT-4 model,
+          which is the largest language model ever created. It is trained on 175 billion parameters
+          and 45 terabytes of text data. It is capable of generating text that is indistinguishable
+          from human-written text.
+        </Typography>
+      </Box>
+      <ChatInput />
     </Box>
   </>
 );
