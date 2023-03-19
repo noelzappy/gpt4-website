@@ -11,28 +11,13 @@ import {
   Unstable_Grid2 as Grid,
 } from "@mui/material";
 import { useAuth } from "src/hooks/use-auth";
-
-const states = [
-  {
-    value: "alabama",
-    label: "Alabama",
-  },
-  {
-    value: "new-york",
-    label: "New York",
-  },
-  {
-    value: "san-francisco",
-    label: "San Francisco",
-  },
-  {
-    value: "los-angeles",
-    label: "Los Angeles",
-  },
-];
+import { useUpdateProfileMutation } from "src/services/api";
+import toast from "react-hot-toast";
 
 export const AccountProfileDetails = () => {
-  const { user } = useAuth();
+  const { user, setUser } = useAuth();
+
+  const [updateProfile, { isLoading: updateProfileLoading }] = useUpdateProfileMutation();
 
   const [values, setValues] = useState({
     name: user?.name,
@@ -46,8 +31,27 @@ export const AccountProfileDetails = () => {
     }));
   }, []);
 
-  const handleSubmit = useCallback((event) => {
+  const handleSubmit = useCallback(async (event) => {
     event.preventDefault();
+
+    const vals = new FormData();
+
+    vals.append("name", values.name);
+    vals.append("email", values.email);
+
+    const { error, data } = await updateProfile(vals);
+
+    if (error) {
+      return toast("Profile update failed.", {
+        icon: "👎",
+      });
+    }
+
+    setUser(data);
+
+    toast("Profile updated successfully", {
+      icon: "👍",
+    });
   }, []);
 
   return (
@@ -83,7 +87,9 @@ export const AccountProfileDetails = () => {
         </CardContent>
         <Divider />
         <CardActions sx={{ justifyContent: "flex-end" }}>
-          <Button variant="contained">Save details</Button>
+          <Button variant="contained" disabled={updateProfileLoading} onClick={handleSubmit}>
+            Save details
+          </Button>
         </CardActions>
       </Card>
     </form>

@@ -11,6 +11,7 @@ import { createTheme } from "src/theme";
 import { createEmotionCache } from "src/utils/create-emotion-cache";
 import "simplebar-react/dist/simplebar.min.css";
 import { store } from "src/services/store";
+import { Toaster } from "react-hot-toast";
 
 const clientSideEmotionCache = createEmotionCache();
 
@@ -44,6 +45,7 @@ const App = (props) => {
             </ThemeProvider>
           </AuthProvider>
         </LocalizationProvider>
+        <Toaster />
       </Provider>
     </CacheProvider>
   );

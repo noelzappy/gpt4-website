@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   Avatar,
   Box,
@@ -9,9 +10,36 @@ import {
   Typography,
 } from "@mui/material";
 import { useAuth } from "src/hooks/use-auth";
+import { useUpdateProfileMutation } from "src/services/api";
 
 export const AccountProfile = () => {
-  const { user } = useAuth();
+  const { user, setUser } = useAuth();
+
+  const [image, setImage] = useState(user?.avatar);
+
+  const [updateProfile, { isLoading: updateProfileLoading }] = useUpdateProfileMutation();
+
+  const handleSubmit = async (file) => {
+    const vals = new FormData();
+    vals.append("avatar", file);
+    const { error, data } = await updateProfile(vals);
+    if (error) {
+      return toast("Image update failed.", {
+        icon: "👎",
+      });
+    }
+
+    setUser(data);
+
+    toast("Image updated successfully", {
+      icon: "👍",
+    });
+  };
+
+  const chooseImage = () => {
+    const fileInput = document.getElementById("imageInput");
+    fileInput.click();
+  };
 
   return (
     <Card>
@@ -24,11 +52,22 @@ export const AccountProfile = () => {
           }}
         >
           <Avatar
-            src="/assets/avatars/avatar-anika-visser.png"
+            src={image}
             sx={{
               height: 80,
               mb: 2,
               width: 80,
+            }}
+            onClick={chooseImage}
+          />
+          <input
+            type="file"
+            id="imageInput"
+            hidden="hidden"
+            onChange={(e) => {
+              const file = e.target.files[0];
+              setImage(URL.createObjectURL(file));
+              handleSubmit(file);
             }}
           />
           <Typography gutterBottom variant="h5">
@@ -40,11 +79,12 @@ export const AccountProfile = () => {
         </Box>
       </CardContent>
       <Divider />
-      <CardActions>
-        <Button fullWidth variant="text">
-          Upload picture
-        </Button>
-      </CardActions>
     </Card>
   );
 };
+
+// <CardActions>
+//   <Button fullWidth variant="text" onClick={chooseImage} disabled={updateProfileLoading}>
+//     Upload picture
+//   </Button>
+// </CardActions>;

@@ -170,6 +170,13 @@ export const AuthProvider = (props) => {
     });
   };
 
+  const setUser = (user) => {
+    dispatch({
+      type: HANDLERS.SIGN_IN,
+      payload: user,
+    });
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -177,6 +184,7 @@ export const AuthProvider = (props) => {
         signIn,
         signUp,
         signOut,
+        setUser,
       }}
     >
       {children}
