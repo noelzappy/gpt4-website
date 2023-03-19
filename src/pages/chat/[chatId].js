@@ -134,7 +134,6 @@ const Page = () => {
     });
 
     io.on("connect_error", () => {
-      console.log("BIG ISSUE HERE");
       toast("We could not establish a connection to ChatGPT. Please try again");
     });
 
