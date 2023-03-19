@@ -1,26 +1,42 @@
+import React, { useEffect, useState } from "react";
 import NextLink from "next/link";
 import { usePathname } from "next/navigation";
 import PropTypes from "prop-types";
 import ChevronUpDownIcon from "@heroicons/react/24/solid/ChevronUpDownIcon";
-import {
-  Box,
-  Button,
-  Divider,
-  Drawer,
-  Stack,
-  SvgIcon,
-  Typography,
-  useMediaQuery,
-} from "@mui/material";
+import { Box, Divider, Drawer, Stack, SvgIcon, Typography, useMediaQuery } from "@mui/material";
 import { Logo } from "src/components/logo";
 import { Scrollbar } from "src/components/scrollbar";
 import { items } from "./config";
 import { SideNavItem } from "./side-nav-item";
+import { useAuth } from "src/hooks/use-auth";
+import { useGetChatsQuery } from "src/services/api";
+import toast from "react-hot-toast";
 
 export const SideNav = (props) => {
   const { open, onClose } = props;
   const pathname = usePathname();
+  const { user } = useAuth();
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up("lg"));
+  const [navItems, setNavItems] = useState(items);
+
+  const { data: chats, isLoading, error } = useGetChatsQuery();
+
+  useEffect(() => {
+    if (error) {
+      toast("Error fetching chats", { icon: "🚨" });
+    }
+
+    if (chats) {
+      const newItems = chats.results.map((chat) => {
+        return {
+          title: chat.subject,
+          path: `/chat/${chat.id}`,
+        };
+      });
+
+      setNavItems([...items, ...newItems]);
+    }
+  }, [error, chats]);
 
   const content = (
     <Scrollbar
@@ -67,10 +83,10 @@ export const SideNav = (props) => {
           >
             <div>
               <Typography color="inherit" variant="subtitle1">
-                Zappy
+                {user?.name}
               </Typography>
               <Typography color="neutral.400" variant="body2">
-                Production
+                GPT4 Chatbot
               </Typography>
             </div>
             <SvgIcon fontSize="small" sx={{ color: "neutral.500" }}>
@@ -96,7 +112,7 @@ export const SideNav = (props) => {
               m: 0,
             }}
           >
-            {items.map((item) => {
+            {navItems.map((item) => {
               const active = item.path ? pathname === item.path : false;
 
               return (

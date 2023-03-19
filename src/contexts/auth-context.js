@@ -6,12 +6,14 @@ const HANDLERS = {
   INITIALIZE: "INITIALIZE",
   SIGN_IN: "SIGN_IN",
   SIGN_OUT: "SIGN_OUT",
+  SET_INITIAL_MESSAGE: "SET_INITIAL_MESSAGE",
 };
 
 const initialState = {
   isAuthenticated: false,
   isLoading: true,
   user: null,
+  initialMessage: null,
 };
 
 const handlers = {
@@ -46,6 +48,14 @@ const handlers = {
       ...state,
       isAuthenticated: false,
       user: null,
+    };
+  },
+  [HANDLERS.SET_INITIAL_MESSAGE]: (state, action) => {
+    const initialMessage = action.payload;
+
+    return {
+      ...state,
+      initialMessage,
     };
   },
 };
@@ -177,6 +187,13 @@ export const AuthProvider = (props) => {
     });
   };
 
+  const setInitialMessage = (message) => {
+    dispatch({
+      type: HANDLERS.SET_INITIAL_MESSAGE,
+      payload: message,
+    });
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -185,6 +202,7 @@ export const AuthProvider = (props) => {
         signUp,
         signOut,
         setUser,
+        setInitialMessage,
       }}
     >
       {children}

@@ -1,4 +1,4 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { createApi } from "@reduxjs/toolkit/query/react";
 import { Config } from "src/utils/constants";
 import { axiosBaseQuery } from "./ajax";
 
@@ -47,7 +47,20 @@ export const api = createApi({
         method: "GET",
       }),
     }),
+
+    createChat: builder.mutation({
+      query: (body) => ({
+        url: "/chats",
+        method: "POST",
+        body,
+      }),
+    }),
   }),
 });
 
-export const { useGetChatQuery, useGetChatsQuery, useUpdateProfileMutation } = api;
+export const {
+  useGetChatQuery,
+  useGetChatsQuery,
+  useUpdateProfileMutation,
+  useCreateChatMutation,
+} = api;
