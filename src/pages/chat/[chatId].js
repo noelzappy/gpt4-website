@@ -27,7 +27,7 @@ const Page = () => {
 
       if (!msg) return;
 
-      const priorMessage = messages[messages.length - 1];
+      const priorMessage = messages[messages.length - 2];
 
       const parentMessage = messages[0];
 
@@ -41,7 +41,7 @@ const Page = () => {
 
       if (parentMessage) {
         messageObj.parentMessage = parentMessage.id;
-        messageObj.parentContent = parentMessage.message;
+        // messageObj.parentContent = parentMessage.message; // Disabled for testing
       }
 
       if (priorMessage) {
@@ -188,6 +188,17 @@ const Page = () => {
               </Card>
             );
           })}
+
+          {isTyping && (
+            <Card
+              sx={{
+                mt: 1,
+                p: 2,
+              }}
+            >
+              <Typography variant="caption">{`ChatGPT is typing...`}</Typography>
+            </Card>
+          )}
         </Box>
 
         <Box m="auto">
@@ -196,7 +207,7 @@ const Page = () => {
             onChange={(e) => setMessage(e.target.value)}
             onSend={() => onSendMessage(message)}
             isLoading={isLoading || isTyping}
-            disabled={isLoading || isTyping}
+            disabled={isLoading || isTyping || !chatId || !message}
           />
         </Box>
       </Box>

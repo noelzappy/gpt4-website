@@ -21,9 +21,8 @@ export const ChatInput = ({ disabled, onSend, isLoading, ...props }) => {
         border: "1px solid #e0e0e0",
         ml: 3,
       }}
-      // on ctrl/cmd + enter, send the message
       onKeyDown={(e) => {
-        if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+        if (e.key === "Enter") {
           if (!disabled && onSend && !isLoading) {
             onSend();
           }
