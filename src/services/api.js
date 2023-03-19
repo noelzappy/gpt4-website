@@ -72,4 +72,6 @@ export const {
   useCreateChatMutation,
   useGetMessagesQuery,
   useLazyGetMessagesQuery,
+
+  useLazyGetChatsQuery,
 } = api;

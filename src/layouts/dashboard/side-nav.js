@@ -9,7 +9,7 @@ import { Scrollbar } from "src/components/scrollbar";
 import { items } from "./config";
 import { SideNavItem } from "./side-nav-item";
 import { useAuth } from "src/hooks/use-auth";
-import { useGetChatsQuery } from "src/services/api";
+import { useGetChatsQuery, useLazyGetChatsQuery } from "src/services/api";
 import toast from "react-hot-toast";
 
 export const SideNav = (props) => {
@@ -20,6 +20,7 @@ export const SideNav = (props) => {
   const [navItems, setNavItems] = useState(items);
 
   const { data: chats, isLoading, error } = useGetChatsQuery();
+  const [getChats, { data: _chats }] = useLazyGetChatsQuery();
 
   useEffect(() => {
     if (error) {
@@ -37,6 +38,23 @@ export const SideNav = (props) => {
       setNavItems([...items, ...newItems]);
     }
   }, [error, chats]);
+
+  useEffect(() => {
+    if (_chats) {
+      const newItems = _chats.results.map((chat) => {
+        return {
+          title: chat.subject,
+          path: `/chat/${chat.id}`,
+        };
+      });
+
+      setNavItems([...items, ...newItems]);
+    }
+  }, [_chats]);
+
+  useEffect(() => {
+    getChats();
+  }, [pathname, getChats]);
 
   const content = (
     <Scrollbar
