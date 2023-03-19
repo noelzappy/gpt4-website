@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import { useAuth } from "src/hooks/use-auth";
 import { useUpdateProfileMutation } from "src/services/api";
+import toast from "react-hot-toast";
 
 export const AccountProfile = () => {
   const { user, setUser } = useAuth();
