@@ -34,7 +34,7 @@ const Page = () => {
       const messageObj = {
         chat: chatId,
         message: msg,
-        systemMessage: "You are a grad school lecturer. Answer concisely as possible",
+        // systemMessage: "You are a grad school lecturer. Answer concisely as possible",
         id: "local_message",
         sender: "user",
       };
