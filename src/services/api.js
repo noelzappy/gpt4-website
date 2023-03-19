@@ -55,6 +55,13 @@ export const api = createApi({
         body,
       }),
     }),
+
+    getMessages: builder.query({
+      query: (id) => ({
+        url: `/messages/?chat=${id}`,
+        method: "GET",
+      }),
+    }),
   }),
 });
 
@@ -63,4 +70,6 @@ export const {
   useGetChatsQuery,
   useUpdateProfileMutation,
   useCreateChatMutation,
+  useGetMessagesQuery,
+  useLazyGetMessagesQuery,
 } = api;

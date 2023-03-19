@@ -112,7 +112,7 @@ export const SideNav = (props) => {
               m: 0,
             }}
           >
-            {navItems.map((item) => {
+            {navItems.map((item, index) => {
               const active = item.path ? pathname === item.path : false;
 
               return (
@@ -121,7 +121,7 @@ export const SideNav = (props) => {
                   disabled={item.disabled}
                   external={item.external}
                   icon={item.icon}
-                  key={item.title}
+                  key={item.id || index}
                   path={item.path}
                   title={item.title}
                 />

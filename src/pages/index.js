@@ -1,33 +1,28 @@
 import React, { useState } from "react";
 import Head from "next/head";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, InputBase, Divider, IconButton, Paper, SvgIcon } from "@mui/material";
 import { Layout as DashboardLayout } from "src/layouts/dashboard/layout";
-import ChatInput from "src/components/chat-input";
 import { useCreateChatMutation } from "src/services/api";
 import toast from "react-hot-toast";
-import { useAuth } from "src/hooks/use-auth";
 import { useRouter } from "next/router";
-
+import { PaperAirplaneIcon } from "@heroicons/react/24/outline";
+import ReactLoading from "react-loading";
 const Page = () => {
-  const { setInitialMessage } = useAuth();
-
   const router = useRouter();
 
   const [message, setMessage] = useState("");
 
   const [createChat, { isLoading: isCreatingChat }] = useCreateChatMutation();
 
-  const onSendMessage = async (msg) => {
-    if (!msg) return;
+  const onStartChat = async () => {
+    if (!message) return;
 
-    const chatSubject = msg.split(" ").slice(0, 4).join(" ");
+    const chatSubject = message.split(" ").slice(0, 3).join(" ");
 
     const { data, error } = await createChat({ subject: chatSubject });
     if (error) {
       return toast("Error creating chat", { type: "error" });
     }
-
-    setInitialMessage(msg);
 
     router.push(`/chat/${data.id}`);
   };
@@ -76,13 +71,52 @@ const Page = () => {
           </Typography>
         </Box>
         <Box m="auto">
-          <ChatInput
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            onSend={() => onSendMessage(message)}
-            isLoading={isCreatingChat}
-            disabled={isCreatingChat}
-          />
+          <Paper
+            sx={{
+              p: "4px",
+              display: "flex",
+              alignItems: "center",
+              border: "1px solid #e0e0e0",
+              maxWidth: "50%",
+              alignSelf: "center",
+              margin: "auto",
+              mt: 5,
+            }}
+          >
+            <InputBase
+              sx={{
+                ml: 3,
+                flex: 1,
+              }}
+              placeholder="Give your chat a subject"
+              autoFocus
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  if (!message) return;
+                  onStartChat();
+                }
+              }}
+            />
+
+            <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
+            <IconButton
+              color="primary"
+              sx={{ p: "10px" }}
+              aria-label="directions"
+              onClick={onStartChat}
+              disabled={isCreatingChat || !message}
+            >
+              {isCreatingChat ? (
+                <ReactLoading type="spin" color="#000" height={24} width={24} />
+              ) : (
+                <SvgIcon fontSize="small" sx={{ color: "neutral.500" }}>
+                  <PaperAirplaneIcon />
+                </SvgIcon>
+              )}
+            </IconButton>
+          </Paper>
         </Box>
       </Box>
     </>
