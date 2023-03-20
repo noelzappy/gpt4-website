@@ -62,6 +62,14 @@ export const api = createApi({
         method: "GET",
       }),
     }),
+
+    payment: builder.mutation({
+      query: (body) => ({
+        url: "/payments",
+        method: "POST",
+        body,
+      }),
+    }),
   }),
 });
 
@@ -74,4 +82,5 @@ export const {
   useLazyGetMessagesQuery,
 
   useLazyGetChatsQuery,
+  usePaymentMutation,
 } = api;
