@@ -6,7 +6,7 @@ import { Box, Button, Container, SvgIcon, Typography } from "@mui/material";
 const Page = () => (
   <>
     <Head>
-      <title>404 | Devias Kit</title>
+      <title>404 | GPT4 Access</title>
     </Head>
     <Box
       component="main"

@@ -1,20 +1,26 @@
 import React, { useState, useEffect, useCallback } from "react";
 import Head from "next/head";
-import { Box, Typography, Card } from "@mui/material";
+import { Box, Typography, Card, Avatar } from "@mui/material";
 import { Layout as DashboardLayout } from "src/layouts/dashboard/layout";
 import ChatInput from "src/components/chat-input";
 import toast from "react-hot-toast";
 import { useRouter } from "next/router";
-import { useLazyGetMessagesQuery } from "src/services/api";
+import { useGetChatQuery, useLazyGetMessagesQuery } from "src/services/api";
 import ReactLoading from "react-loading";
 import socket from "src/services/socket";
+import ReactMarkdown from "react-markdown";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { useAuth } from "src/hooks/use-auth";
 
 const Page = () => {
   const router = useRouter();
   const { chatId } = router.query;
+  const { user } = useAuth();
 
   const [getMessages, { data: allMessages, isLoading: isMessagesLoading }] =
     useLazyGetMessagesQuery();
+
+  const { data: chat } = useGetChatQuery(chatId);
 
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
@@ -33,8 +39,10 @@ const Page = () => {
 
       const messageObj = {
         chat: chatId,
-        message: msg,
-        // systemMessage: "You are a grad school lecturer. Answer concisely as possible",
+        message: msg.trim(),
+        systemMessage: `Subject: ${
+          chat?.subject || "You are ChatGPT"
+        }. Answer concisely as possible`,
         id: "local_message",
         sender: "user",
       };
@@ -60,10 +68,10 @@ const Page = () => {
 
   useEffect(() => {
     window.scrollTo({
-      top: document.documentElement.scrollHeight,
+      top: document.documentElement.scrollHeight + 1000,
       behavior: "smooth",
     });
-  }, [messages]);
+  }, [messages, isTyping]);
 
   useEffect(() => {
     getMessages(chatId);
@@ -128,13 +136,16 @@ const Page = () => {
     io.on("appError", (data) => {
       setIsLoading(false);
       setIsTyping(false);
-      toast(data.error, { icon: "🚨" });
+      toast(data.error, { icon: "🚨", position: "bottom-center" });
 
       console.log(data);
     });
 
     io.on("connect_error", () => {
-      toast("We could not establish a connection to ChatGPT. Please try again");
+      toast("We could not establish a connection to ChatGPT. Please try again", {
+        icon: "🚨",
+        position: "bottom-center",
+      });
     });
 
     return () => {
@@ -180,11 +191,39 @@ const Page = () => {
               <Card
                 key={item.id}
                 sx={{
-                  mt: 1,
+                  mt: 2,
                   p: 2,
+                  backgroundColor: item.sender === "user" ? "#FBFBFB" : "white",
                 }}
               >
-                <Typography key={item.id}>{item.message}</Typography>
+                <Avatar
+                  sx={{
+                    cursor: "pointer",
+                    height: 40,
+                    width: 40,
+                  }}
+                  src={item.sender === "user" ? user?.avatar : "/assets/avatars/gpt.png"}
+                />
+
+                <ReactMarkdown
+                  components={{
+                    code({ node, inline, className, children, ...props }) {
+                      const match = /language-(\w+)/.exec(className || "");
+
+                      return !inline && match ? (
+                        <SyntaxHighlighter language={match[1]} PreTag="div" {...props}>
+                          {String(children).replace(/\n$/, "")}
+                        </SyntaxHighlighter>
+                      ) : (
+                        <code className={className} {...props}>
+                          {children}
+                        </code>
+                      );
+                    },
+                  }}
+                >
+                  {item.message}
+                </ReactMarkdown>
               </Card>
             );
           })}
