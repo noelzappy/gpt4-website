@@ -51,7 +51,7 @@ export const SideNav = (props) => {
     const ref = `ref-${Math.floor(Math.random() * 1000000000 + 1)}_${user.id}`;
 
     const handler = PaystackPop.setup({
-      key: "pk_test_d689c720e92b9e8628c8e44bd72bc21b5fc00bbf",
+      key: "pk_live_6ad69237a66eee1b9061555adc2c4fef1383ee02",
       email: user.email,
       amount: amount * 100,
       ref: "" + ref,
