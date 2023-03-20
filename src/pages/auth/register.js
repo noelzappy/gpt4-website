@@ -64,7 +64,12 @@ const Page = () => {
                   Log in
                 </Link>
               </Typography>
+
+              <Typography variant="body2">
+                Allowed Email Providers are Gmail, Outlook, and Yahoo.
+              </Typography>
             </Stack>
+
             <form noValidate onSubmit={formik.handleSubmit}>
               <Stack spacing={3}>
                 <TextField
