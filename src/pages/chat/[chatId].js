@@ -40,9 +40,7 @@ const Page = () => {
       const messageObj = {
         chat: chatId,
         message: msg.trim(),
-        systemMessage: `Subject: ${
-          chat?.subject || "You are ChatGPT"
-        }. Answer concisely as possible`,
+        systemMessage: "You are ChatGPT. Answer concisely as possible",
         id: "local_message",
         sender: "user",
       };
@@ -54,7 +52,7 @@ const Page = () => {
 
       if (priorMessage) {
         messageObj.priorMessage = priorMessage.id;
-        messageObj.priorContent = priorMessage.message;
+//         messageObj.priorContent = priorMessage.message;
       }
 
       io.emit("message", messageObj);
